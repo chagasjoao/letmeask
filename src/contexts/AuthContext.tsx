@@ -3,27 +3,27 @@ import React, { createContext, ReactNode, useState, useEffect } from 'react'
 import { auth, firebase } from '../services/firebase'
 
 type User = {
-    id: string,
-    name: string,
-    avatar: string
-  }
+  id: string
+  name: string
+  avatar: string
+}
 
 type AuthContextType = {
-    user: User | undefined;
-    signInWithGoogle: () => Promise<void>;
+  user: User | undefined
+  signInWithGoogle: () => Promise<void>
 }
 
 type AuthContextProviderProps = {
-    children: ReactNode;
+  children: ReactNode
 }
 
 export const AuthContext = createContext({} as AuthContextType)
 
-export function AuthContextProvider (props: AuthContextProviderProps) {
+export function AuthContextProvider(props: AuthContextProviderProps) {
   const [user, setUser] = useState<User>()
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(user => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
         const { displayName, photoURL, uid } = user
 
@@ -43,7 +43,7 @@ export function AuthContextProvider (props: AuthContextProviderProps) {
     }
   }, [])
 
-  async function signInWithGoogle () {
+  async function signInWithGoogle() {
     const provider = new firebase.auth.GoogleAuthProvider()
 
     const result = await auth.signInWithPopup(provider)
@@ -65,7 +65,7 @@ export function AuthContextProvider (props: AuthContextProviderProps) {
 
   return (
     <AuthContext.Provider value={{ user, signInWithGoogle }}>
-        {props.children}
+      {props.children}
     </AuthContext.Provider>
   )
 }
